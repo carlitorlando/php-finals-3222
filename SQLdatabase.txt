@@ -8,7 +8,7 @@ create table contact (
     baddress varchar(50) not null,
     caddress varchar(50) not null,
     paddress varchar(50) not null,
-    number int(11) not null,
+    number varchar(11) not null,
     email varchar(128) not null,
     datein varchar(128) not null,
     dateout varchar(128) not null
