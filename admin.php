@@ -19,6 +19,7 @@
                 <div class="left">
                     <h2>Search City</h2>
                     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+			
                         <input type="text" placeholder="Lucena City" name="search_city" required>	
                         <input type="submit" name="search_city_button" value="Search City"><br>
                     </form>
@@ -41,7 +42,7 @@
                 <div class="right">
                     <h2>Search Name</h2>
                     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-                        <input type="text" placeholder="Juan Dela Cruz" name="search_name" required>	
+                        <input type="text" placeholder="Surname" name="search_name" required>	
                         <input type="submit" name="search_name_button" value="Search Name"><br>
                     </form>
                     <h2>Search Time and Day</h2>
@@ -64,17 +65,64 @@
 	</div>
 
 	<div class="content-log">
-		<h2>Log Book</h2>
-		<?php
-			date_default_timezone_set('Asia/Manila');
-			error_reporting (E_ALL ^ E_NOTICE);	//remove notices
-			include_once 'db.inc.php';		//database reference
+	<h2>Log Book</h2>
+	<?php
+		date_default_timezone_set('Asia/Manila');
+		error_reporting (E_ALL ^ E_NOTICE);	//remove notices
+		include_once 'db.inc.php';		//database reference
 			
-			if(isset($_POST['dispall'])){		//display all
-				$sql = "SELECT * from contact";		//SQL statement
-				$result = mysqli_query($conn, $sql);		//send SQL statement to database
-				$resultcheck = mysqli_num_rows($result);	//check if there is a result
-					if($resultcheck > 0){
+		if(isset($_POST['dispall'])){		//display all
+			$sql = "SELECT * from contact";		//SQL statement
+			$result = mysqli_query($conn, $sql);		//send SQL statement to database
+			writeMsg($result);			//function to check for results then display results
+            	}
+
+            	else if(isset($_POST['search_city_button'])){
+			// city to search
+    			$city = $_POST['search_city'];
+   
+    			// mysql search query
+    			$query = "SELECT * FROM contact WHERE caddress = '$city'";
+    			writeMsg($result);
+
+            	}else if(isset($_POST['search_brgy_button'])){
+                
+            	}else if(isset($_POST['search_prov_button'])){
+                	// province to search
+    			$prov = $_POST['search_prov'];
+   
+    			// mysql search query
+    			$query = "SELECT * FROM contact WHERE paddress = '$prov'";
+    			writeMsg($result);
+
+            	}else if(isset($_POST['search_id_button'])){
+                	// id to search
+    			$id = $_POST['search_id'];
+   
+    			// mysql search query
+    			$query = "SELECT * FROM contact WHERE id = $id LIMIT 1";
+    			writeMsg($result);
+
+            	}else if(isset($_POST['search_name_button'])){
+                	// name to search
+    			$name = $_POST['search_name'];
+   
+    			// mysql search query
+    			$query = "SELECT * FROM contact WHERE lname = '$name'";
+    
+    			$result = mysqli_query($conn, $query);		//send SQL statement to database
+			writeMsg($result);		
+            	}else if(isset($_POST['search_time_button'])){
+                
+            	}
+
+            	else if(isset($_POST['back'])){
+                	header("Location: index.php");
+            	}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		function writeMsg($result) {			//function to check for results then display results
+ 		$resultcheck = mysqli_num_rows($result);	//check if there is a result
+			if($resultcheck > 0){
                         echo "<table class=\"table-log\">";
                         echo "<tr>
                                 <th>ID
@@ -87,46 +135,29 @@
                                 <th>Email</th>
                                 <th>Sign-In</th>
                                 <th>Sign-Out</th>";
-						while($row = mysqli_fetch_assoc($result)){
-							echo "<tr>";
-							echo "<td>", $row['id'], "</td>";
-							echo "<td>", $row['fname'], "</td>";
-							echo "<td>", $row['lname'], "</td>";
-							echo "<td>", $row['baddress'], "</td>";
-							echo "<td>", $row['caddress'], "</td>";
-							echo "<td>", $row['paddress'], "</td>";
-							echo "<td>", $row['number'], "</td>";
-							echo "<td>", $row['email'], "</td>";
-							echo "<td>", $row['datein'], "</td>";	
-							echo "<td>", $row['dateout'], "</td>";	
-                            echo "</tr>";
-						}
+					while($row = mysqli_fetch_assoc($result)){
+						echo "<tr>";
+						echo "<td>", $row['id'], "</td>";
+						echo "<td>", $row['fname'], "</td>";
+						echo "<td>", $row['lname'], "</td>";
+						echo "<td>", $row['baddress'], "</td>";
+						echo "<td>", $row['caddress'], "</td>";
+						echo "<td>", $row['paddress'], "</td>";
+						echo "<td>", $row['number'], "</td>";
+						echo "<td>", $row['email'], "</td>";
+						echo "<td>", $row['datein'], "</td>";
+						echo "<td>", $row['dateout'], "</td>";
+							
+                            			echo "</tr>";
+					}
                         echo "</table>";
-					}
-					else if($resultcheck == 0 || $resultcheck == FALSE){			//if no contact in database display no result
-						echo "No results";
-					}
-            }
-
-            else if(isset($_POST['search_city_button'])){
-
-            }else if(isset($_POST['search_brgy_button'])){
-                
-            }else if(isset($_POST['search_prov_button'])){
-                
-            }else if(isset($_POST['search_id_button'])){
-                
-            }else if(isset($_POST['search_name_button'])){
-                
-            }else if(isset($_POST['search_time_button'])){
-                
-            }
-
-            else if(isset($_POST['back'])){
-                header("Location: index.php");
-            }
-			
-		?>
+			}
+			else if($resultcheck == 0 || $resultcheck == FALSE){			//if no contact in database display no result
+				echo "No results";
+			}
+	}
+		
+	?>
 
 	</div>
 
